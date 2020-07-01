@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   data() {
     return {
@@ -57,7 +56,7 @@ export default {
   },
   methods: {
     async onSubmit() {
-      const res = await axios.post('http://localhost:3000/register', this.user)
+      const res = await this.$axios.post('/register', this.user)
       // console.log(res)
       const { statusCode, message } = res.data
       if (statusCode === 200) {

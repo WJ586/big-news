@@ -8,6 +8,12 @@ import router from '../router'
 import NewsHeader from '../components/News-header.vue'
 import Logo from '../components/Logo.vue'
 import { Form, Field, Button, Toast } from 'vant'
+import axios from 'axios'
+
+// 把axios挂载到vue原型上
+Vue.prototype.$axios = axios
+// 配置axios的基准地址
+axios.defaults.baseURL = 'http://localhost:3000'
 
 Vue.use(Form)
 Vue.use(Field)

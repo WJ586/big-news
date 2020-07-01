@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   data() {
     return {
@@ -47,7 +46,7 @@ export default {
   },
   methods: {
     async onSubmit() {
-      const res = await axios.post('http://localhost:3000/login', this.user)
+      const res = await this.$axios.post('/login', this.user)
       // console.log(res)
       const { statusCode, message, data } = res.data
       if (statusCode === 200) {
