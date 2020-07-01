@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    我是根组件
-    <span class="iconfont icondianzan"></span>
-    <news-header></news-header>
+    <router-view></router-view>
   </div>
 </template>
 
