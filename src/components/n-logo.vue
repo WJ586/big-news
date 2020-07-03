@@ -8,14 +8,14 @@
 export default {}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .logo {
   display: flex;
   .iconnew {
     flex: 1;
-    font-size: 80px;
-    text-align: center;
+    font-size: 95px;
     color: #cc3300;
+    text-align: center;
   }
 }
 </style>

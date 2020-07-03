@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
+import Login from '../views/login.vue'
+import Register from '../views/register.vue'
+
 Vue.use(VueRouter)
 
 const router = new VueRouter({
