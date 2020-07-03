@@ -57,12 +57,11 @@ export default {
     async onSubmit(values) {
       const res = await this.$axios.post('/login', this.user)
       const { statusCode, message, data } = res.data
-      // console.log(res)
-
       if (statusCode === 200) {
         this.$toast.success(message)
         localStorage.setItem('token', data.token)
-        this.$router.push('/')
+        localStorage.setItem('userId', data.user.id)
+        this.$router.push('/user')
       } else {
         this.$toast.fail(message)
       }
@@ -72,8 +71,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.login {
+  padding: 0 21px;
+}
 .van-cell {
-  background-color: #e6e6e6;
+  background-color: #f2f2f2;
 }
 .van-button {
   background-color: #cc3300;

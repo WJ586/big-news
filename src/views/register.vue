@@ -83,8 +83,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.register {
+  padding: 0 21px;
+}
 .van-cell {
-  background-color: #e6e6e6;
+  background-color: #f2f2f2;
 }
 .van-button {
   background-color: #cc3300;
