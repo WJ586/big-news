@@ -8,7 +8,19 @@ import router from './router'
 import NewsHeader from './components/n-header.vue'
 import Logo from './components/n-logo.vue'
 import Nav from './components/n-nav.vue'
-import { Form, Field, Button, Toast } from 'vant'
+import {
+  Form,
+  Field,
+  Button,
+  Toast,
+  Dialog,
+  RadioGroup,
+  Radio,
+  Cell,
+  CellGroup,
+  Uploader
+} from 'vant'
+
 import axios from 'axios'
 import moment from 'moment'
 
@@ -47,9 +59,15 @@ Vue.use(Form)
 Vue.use(Field)
 Vue.use(Button)
 Vue.use(Toast)
+Vue.use(Dialog)
 Vue.component('n-header', NewsHeader)
 Vue.component('n-logo', Logo)
 Vue.component('n-nav', Nav)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(Cell)
+Vue.use(CellGroup)
+Vue.use(Uploader)
 Vue.config.productionTip = false
 
 // 定义全局过滤器
@@ -61,13 +79,15 @@ Vue.filter('time', function(input) {
 // to:到哪儿去
 // from:从哪儿来
 // next():代表放行
+// 保存所有需要登录才能访问的页面
+const pages = ['/user', '/edit-user']
 router.beforeEach(function(to, from, next) {
   // console.log('全局的前置导航守卫')
   // console.log('to', to)
   // console.log('from', from)
   const token = localStorage.getItem('token')
   // 如果去的页面是user页面，就需要判断是否有token
-  if (to.path === '/user') {
+  if (pages.includes(to.path)) {
     // 判断是否有token，如果没有token,去登录，如果有token，放走
     if (token) {
       next()

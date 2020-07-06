@@ -30,6 +30,7 @@ export default {}
     line-height: 50px;
     text-align: center;
     font-size: 14px;
+    font-weight: 700;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="user">
-    <div class="user-header">
+    <div class="user-header" @click="$router.push('/edit-user')">
       <div class="avatar">
         <img :src="$axios.defaults.baseURL+user.head_img" alt />
       </div>
@@ -27,9 +27,10 @@
         <template #title>我的收藏</template>
         <template #content>文章/视频</template>
       </n-nav>
-      <n-nav>
+      <n-nav @click="$router.push('/edit-user')">
         <template #title>设置</template>
       </n-nav>
+      <n-nav #title @click="logout">退出</n-nav>
     </div>
   </div>
 </template>
@@ -70,6 +71,31 @@ export default {
     //   localStorage.removeItem('token')
     //   localStorage.removeItem('userId')
     // }
+  },
+  methods: {
+    async logout() {
+      try {
+        await this.$dialog.confirm({
+          title: '温馨提示',
+          message: '您确定要提出吗？'
+        })
+        localStorage.removeItem('token')
+        localStorage.removeItem('userId')
+        this.$toast.success('退出成功')
+        this.$router.push('/login')
+      } catch {
+        this.$toast.fail('取消成功')
+      }
+      // .then(() => {
+      //   localStorage.removeItem('token')
+      //   localStorage.removeItem('userId')
+      //   this.$toast.success('退出成功')
+      //   this.$router.push('/login')
+      // })
+      // .catch(() => {
+      //   this.$toast.fail('取消成功')
+      // })
+    }
   }
 }
 </script>
