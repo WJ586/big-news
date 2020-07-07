@@ -15,7 +15,7 @@
       <i class="iconfont iconjiantou1"></i>
     </div>
     <div class="user-nav">
-      <n-nav>
+      <n-nav @click="$router.push('/myfollows')">
         <template v-slot:title>我的关注</template>
         <template #content>关注的用户</template>
       </n-nav>
