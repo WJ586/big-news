@@ -44,11 +44,29 @@
         </van-cell-group>
       </van-radio-group>
     </van-dialog>
+    <div class="mask" v-if="isShowmask">
+      <van-button type="info" class="confirm" @click="conCrop">裁剪</van-button>
+      <van-button type="info" class="cancel" @click="canCrop">取消</van-button>
+      <VueCropper
+        ref="cropper"
+        :img="img"
+        :autoCrop="true"
+        autoCropWidth="150"
+        autoCropHeight="150"
+        :fixed="true"
+        :fixedNumber="[1,1]"
+        :centerBox="true"
+      ></VueCropper>
+    </div>
   </div>
 </template>
 
 <script>
+import { VueCropper } from 'vue-cropper'
 export default {
+  components: {
+    VueCropper
+  },
   data() {
     return {
       info: {},
@@ -57,7 +75,9 @@ export default {
       showPsd: false,
       password: '',
       showGender: false,
-      gender: 1
+      gender: 1,
+      isShowmask: false,
+      img: ''
     }
   },
   created() {
@@ -114,43 +134,53 @@ export default {
       })
     },
     async afterRead(file) {
-      // // 此时可以自行将文件上传至服务器
-      // console.log(file)
-      // // 1.创建异步对象
-      // const xhr = new XMLHttpRequest()
-      // // 2.设置请求行
-      // xhr.open('post', 'http://localhost:3000/upload')
-      // // 需要上传文件，文件的数据需要放到formData中，formData会将传进来的form表单中的数据一并获取，并转换成二进制的数据
-      // const fd = new FormData()
-      // // append可以追加数据一并发送给服务器
-      // fd.append('file', file.file)
-      // // 3.设置请求头，请求头携带token数据
-      // xhr.setRequestHeader('Authorization', localStorage.getItem('token'))
-      // // 4.设置请求体
-      // xhr.send(fd)
-      // // 5.监视异步对象的状态
-      // xhr.onload = function() {
-      //   /* 等价于xhr.onreadystatechange=function(){
-      //     if(xhr.readyState===4){
-
-      //     }
-      //   }
-      //   */
-      //   if (xhr.status === 200) {
-      //     console.log(xhr.responseText)
-      //   }
+      this.isShowmask = 'true'
+      this.img = file.content
+      //  图片的格式和大小校验 gif|png|jpg 20k
+      // console.log(file.file)
+      // 是否超出范围
+      // const isLimit = file.file.size / 1024 >= 20
+      // if (isLimit) {
+      //   this.$toast.fail('上传的图片不能超过20kb')
+      //   return
       // }
-      const fd = new FormData()
-      fd.append('file', file.file)
-      const res = await this.$axios.post('/upload', fd)
-      // console.log(res)
-      const { statusCode, data } = res.data
-      if (statusCode === 200) {
-        // console.log(data.url)
-        this.editUser({
-          head_img: data.url
-        })
-      }
+      // // 限制图片的格式
+      // const isGif = file.file.type === 'image/gif'
+      // const isPng = file.file.type === 'image/png'
+      // const isJpg = file.file.type === 'image/jpeg'
+      // if (!(isGif || isPng || isJpg)) {
+      //   this.$toast.fail('上传的图片只能是gif|png|jpeg类型')
+      //   // return
+      // }
+      // const fd = new FormData()
+      // fd.append('file', file.file)
+      // const res = await this.$axios.post('/upload', fd)
+      // // console.log(res)
+      // const { statusCode, data } = res.data
+      // if (statusCode === 200) {
+      //   // console.log(data.url)
+      //   this.editUser({
+      //     head_img: data.url
+      //   })
+      // }
+    },
+    conCrop() {
+      this.$refs.cropper.getCropBlob(async blob => {
+        const fd = new FormData()
+        fd.append('file', blob)
+        const res = await this.$axios.post('/upload', fd)
+        // console.log(res)
+        const { statusCode, data } = res.data
+        if (statusCode === 200) {
+          this.editUser({
+            head_img: data.url
+          })
+        }
+      })
+      this.isShowmask = false
+    },
+    canCrop() {
+      this.isShowmask = false
     }
   }
 }
@@ -182,5 +212,21 @@ export default {
 }
 /deep/ .van-dialog__content {
   padding: 2px 10px;
+}
+.mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  .confirm {
+    float: left;
+    z-index: 9999;
+  }
+  .cancel {
+    float: right;
+    z-index: 9999;
+  }
 }
 </style>
