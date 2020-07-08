@@ -8,6 +8,7 @@ import Demo from '../views/Demo.vue'
 import MyFollow from '../views/MyFollows.vue'
 import MyComments from '../views/MyComments.vue'
 import MyStar from '../views/MyStar.vue'
+import Home from '../views/Home.vue'
 Vue.use(VueRouter)
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
@@ -15,6 +16,7 @@ VueRouter.prototype.push = function push(location) {
 }
 const router = new VueRouter({
   routes: [
+    { path: '/', component: Home, name: 'home' },
     { path: '/login', component: Login, name: 'login' },
     { path: '/register', component: Register, name: 'register' },
     { path: '/user', component: User, name: 'user' },

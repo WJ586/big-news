@@ -8,6 +8,7 @@ import router from './router'
 import NewsHeader from './components/n-header.vue'
 import Logo from './components/n-logo.vue'
 import Nav from './components/n-nav.vue'
+import Post from './components/n-post.vue'
 import {
   Form,
   Field,
@@ -19,7 +20,9 @@ import {
   Cell,
   CellGroup,
   Uploader,
-  List
+  List,
+  Tab,
+  Tabs
 } from 'vant'
 
 import axios from 'axios'
@@ -61,15 +64,18 @@ Vue.use(Field)
 Vue.use(Button)
 Vue.use(Toast)
 Vue.use(Dialog)
-Vue.component('n-header', NewsHeader)
-Vue.component('n-logo', Logo)
-Vue.component('n-nav', Nav)
 Vue.use(Radio)
 Vue.use(RadioGroup)
 Vue.use(Cell)
 Vue.use(CellGroup)
 Vue.use(Uploader)
 Vue.use(List)
+Vue.use(Tab)
+Vue.use(Tabs)
+Vue.component('n-header', NewsHeader)
+Vue.component('n-logo', Logo)
+Vue.component('n-nav', Nav)
+Vue.component('n-post', Post)
 Vue.config.productionTip = false
 
 // 定义全局过滤器
