@@ -1,6 +1,6 @@
 <template>
   <div class="register">
-    <n-header>注册</n-header>
+    <n-header></n-header>
     <n-logo></n-logo>
     <van-form @submit="onSubmit">
       <van-field v-model="user.username" placeholder="请输入用户名" :rules="rules.username" />
@@ -12,7 +12,7 @@
         :rules="rules.password"
       />
       <div style="margin: 16px;">
-        <van-button round block type="info" native-type="submit">提交</van-button>
+        <van-button round block type="info" native-type="submit">注册</van-button>
       </div>
     </van-form>
     <p>

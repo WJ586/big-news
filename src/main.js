@@ -18,7 +18,8 @@ import {
   Radio,
   Cell,
   CellGroup,
-  Uploader
+  Uploader,
+  List
 } from 'vant'
 
 import axios from 'axios'
@@ -68,11 +69,12 @@ Vue.use(RadioGroup)
 Vue.use(Cell)
 Vue.use(CellGroup)
 Vue.use(Uploader)
+Vue.use(List)
 Vue.config.productionTip = false
 
 // 定义全局过滤器
-Vue.filter('time', function(input) {
-  return moment(input).format('YYYY-MM-DD')
+Vue.filter('time', function(input, str = 'YYYY-MM-DD') {
+  return moment(input).format(str)
 })
 
 // 全局的导航守卫（路由的钩子函数 beforeEach afterEach）

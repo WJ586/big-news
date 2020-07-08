@@ -1,12 +1,15 @@
 <template>
-  <div class="header">
-    <div class="back" @click="$router.back()">
-      <span class="iconfont iconjiantou2"></span>
+  <div class="fixedheader">
+    <div class="header">
+      <div class="box"></div>
+      <div class="back" @click="$router.back()">
+        <span class="iconfont iconjiantou2"></span>
+      </div>
+      <div class="title">
+        <slot></slot>
+      </div>
+      <div class="extra"></div>
     </div>
-    <div class="title">
-      <slot></slot>
-    </div>
-    <div class="extra"></div>
   </div>
 </template>
 
@@ -15,9 +18,16 @@ export default {}
 </script>
 
 <style lang="less" scoped>
-.header {
-  display: flex;
+.fixedheader {
   height: 50px;
+}
+.header {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  background-color: #f2f2f2;
+  display: flex;
+
   .back,
   .extra {
     width: 50px;

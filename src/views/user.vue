@@ -19,7 +19,7 @@
         <template v-slot:title>我的关注</template>
         <template #content>关注的用户</template>
       </n-nav>
-      <n-nav>
+      <n-nav @click="$router.push('/mycomments')">
         <template #title>我的跟帖</template>
         <template #content>跟帖/回复</template>
       </n-nav>

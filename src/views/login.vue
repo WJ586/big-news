@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <n-header>登录</n-header>
+    <n-header></n-header>
     <n-logo></n-logo>
     <van-form @submit="onSubmit">
       <van-field v-model="user.username" placeholder="请输入用户名 / 手机密码" :rules="rules.username" />
@@ -11,7 +11,7 @@
         :rules="rules.password"
       />
       <div style="margin: 16px;">
-        <van-button round block type="info" native-type="submit">提交</van-button>
+        <van-button round block type="info" native-type="submit">登录</van-button>
       </div>
     </van-form>
     <p>
