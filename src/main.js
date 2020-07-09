@@ -22,11 +22,14 @@ import {
   Uploader,
   List,
   Tab,
-  Tabs
+  Tabs,
+  PullRefresh
 } from 'vant'
 
 import axios from 'axios'
 import moment from 'moment'
+
+Vue.use(PullRefresh)
 
 // 把axios挂载到vue原型上n
 Vue.prototype.$axios = axios

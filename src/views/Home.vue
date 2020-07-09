@@ -15,7 +15,17 @@
     <div class="nav">
       <van-tabs v-model="active" sticky animated swipeable color=" #d62312">
         <van-tab :title="item.name" v-for="item in tabList" :key="item.id">
-          <n-post v-for="post in articleList" :key="post.id" :post="post"></n-post>
+          <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              @load="onLoad"
+              :immediate-check="false"
+            >
+              <n-post v-for="post in articleList" :key="post.id" :post="post"></n-post>
+            </van-list>
+          </van-pull-refresh>
         </van-tab>
       </van-tabs>
     </div>
@@ -29,8 +39,11 @@ export default {
       tabList: [],
       active: 0,
       pageIndex: 1,
-      pageSize: 10,
-      articleList: []
+      pageSize: 5,
+      articleList: [],
+      loading: false,
+      finished: false,
+      refreshing: false
     }
   },
   created() {
@@ -57,14 +70,34 @@ export default {
       })
       const { statusCode, data } = res.data
       if (statusCode === 200) {
-        this.articleList = data
+        this.articleList = [...this.articleList, ...data]
+        this.loading = false
+        this.refreshing = false
+        if (data.length < this.pageSize) {
+          this.finished = true
+        }
         console.log(this.articleList)
       }
+    },
+    onLoad() {
+      this.pageIndex++
+      this.getArticleList(this.tabList[this.active].id)
+    },
+    onRefresh() {
+      this.pageIndex = 1
+      this.articleList = []
+      this.loading = true
+      this.finished = false
+      this.getArticleList(this.tabList[this.active].id)
     }
   },
   watch: {
     active(value) {
       // console.log(value)
+      this.pageIndex = 1
+      this.articleList = []
+      this.loading = true
+      this.finished = false
       this.getArticleList(this.tabList[value].id)
     }
   }

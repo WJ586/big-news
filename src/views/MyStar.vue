@@ -1,18 +1,7 @@
 <template>
   <div>
     <n-header>我的收藏</n-header>
-    <div class="item" v-for="item in list" :key="item.id">
-      <div class="content">
-        <div class="title">{{item.title}}</div>
-        <div class="footer">
-          <span class="name">{{item.user.nickname}}</span>
-          <span>{{item.comments.length}}跟帖</span>
-        </div>
-      </div>
-      <div class="img">
-        <img :src="$url(item.cover[0].url)" alt />
-      </div>
-    </div>
+    <n-post v-for="item in list" :key="item.id" :post="item"></n-post>
   </div>
 </template>
 <script>
@@ -28,6 +17,9 @@ export default {
     const { statusCode, data } = res.data
     if (statusCode === 200) {
       this.list = data
+      this.list.forEach(item => {
+        item.comment_length = item.comments.length
+      })
       console.log(this.list)
     }
   }

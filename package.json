@@ -57,7 +57,8 @@
       "space-before-function-paren": [
         "error",
         "never"
-      ]
+      ],
+      "no-debugger": 0
     }
   },
   "browserslist": [
