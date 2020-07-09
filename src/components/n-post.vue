@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="$router.push(`/news-detail/${post.id}`)">
     <div class="video" v-if="post.type===2">
       <div class="title">{{post.title}}</div>
       <div class="img">
@@ -43,7 +43,7 @@ export default {
   props: ['post']
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .content {
   flex: 1;
   display: flex;

@@ -76,7 +76,7 @@ export default {
         if (data.length < this.pageSize) {
           this.finished = true
         }
-        console.log(this.articleList)
+        // console.log(this.articleList)
       }
     },
     onLoad() {
