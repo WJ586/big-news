@@ -9,30 +9,31 @@
           <span class="iconfont iconnew"></span>
         </div>
         <div class="right">
-          <span class="follow" v-if="!this.detailList.has_follow" @click="followfn">关注</span>
+          <span class="follow" v-if="!detailList.has_follow" @click="followfn">关注</span>
           <span class="followed" v-else @click="cancelF">已关注</span>
         </div>
       </div>
-      <div class="news" v-if="this.detailList.type===1">
-        <div class="title">{{this.detailList.title}}</div>
+      <div class="news" v-if="detailList.type===1">
+        <div class="title">{{detailList.title}}</div>
         <div class="user">
-          <span class="nickname">{{this.detailList.user.nickname}}</span>
-          <span class="time">{{this.detailList.create_date|time}}</span>
+          <span class="nickname">{{detailList.user.nickname}}</span>
+          <span class="time">{{detailList.create_date|time}}</span>
         </div>
-        <div class="content" v-html="this.detailList.content"></div>
+        <div class="content" v-html="detailList.content"></div>
       </div>
 
       <div class="video" v-else>
-        <video :src="this.detailList.content" controls loop></video>
+        <video :src="detailList.content" controls loop></video>
         <div class="user">
           <img :src="$axios.defaults.baseURL+this.detailList.user.head_img" alt />
-          <span class="nickname">{{this.detailList.user.nickname}}</span>
+          <span class="nickname">{{detailList.user.nickname}}</span>
         </div>
-        <div class="title">{{this.detailList.title}}</div>
+        <div class="title">{{detailList.title}}</div>
       </div>
       <div class="praise">
-        <div class="zan">
-          <span class="iconfont icondianzan"></span>112
+        <div :class="{zan:true,zanactive:detailList.has_like}" @click="zanfn">
+          <span class="iconfont icondianzan"></span>
+          {{detailList.like_length}}
         </div>
         <div class="share">
           <span class="iconfont iconweixin"></span>微信
@@ -41,6 +42,18 @@
     </div>
 
     <div class="follows"></div>
+    <div class="write">
+      <input type="text" placeholder="写跟帖" />
+      <span class="iconfont iconpinglun-">
+        <span>{{detailList.comment_length}}</span>
+      </span>
+      <span
+        class="iconfont iconshoucang"
+        :class="{staractive:this.detailList.has_star}"
+        @click="starfn"
+      ></span>
+      <span class="iconfont iconfenxiang"></span>
+    </div>
   </div>
 </template>
 
@@ -64,35 +77,34 @@ export default {
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.detailList = data
-        // console.log(this.detailList)
+        console.log(this.detailList)
       }
     },
-    async followfn() {
+    async isLogin(url, id) {
       try {
+        id = id || this.detailList.id
         const token = localStorage.getItem('token')
         if (!token) {
           await this.$dialog.confirm({
             title: '温馨提示',
-            message: '未登录，请先登录？'
+            message: '您还未登录，是否登录？'
           })
-
-          this.$router.push({
-            path: '/login',
-            query: {
-              back: true
-            }
-          })
+          localStorage.setItem('backUrl', this.$route.path)
+          this.$router.push('/login')
           return
         }
-        const id = this.detailList.user.id
-        // console.log(id)
-
-        const res = await this.$axios.get(`/user_follows/${id}`)
-        const { statusCode } = res.data
+        const res = await this.$axios.get(`${url}/${id}`)
+        const { statusCode, message } = res.data
         if (statusCode === 200) {
+          this.$toast.success(message)
           this.getArticle()
         }
-      } catch {}
+      } catch {
+        this.$toast.fail('取消成功')
+      }
+    },
+    async followfn() {
+      this.isLogin('/user_follows', this.detailList.user.id)
     },
     async cancelF() {
       const id = this.detailList.user.id
@@ -103,6 +115,13 @@ export default {
       if (statusCode === 200) {
         this.getArticle()
       }
+    },
+    async zanfn() {
+      // 判断用户是否登录
+      this.isLogin('/post_like')
+    },
+    async starfn() {
+      this.isLogin('/post_star')
     }
   }
 }
@@ -232,11 +251,55 @@ export default {
     font-size: 12px;
     line-height: 25px;
   }
+  .zanactive {
+    color: red;
+    border: 1px solid red;
+  }
   .share {
     font-size: 12px;
     line-height: 25px;
     .iconweixin {
       color: #00c800;
+    }
+  }
+}
+.write {
+  display: flex;
+  height: 50px;
+  input {
+    width: 200px;
+    border: none;
+    height: 36px;
+    margin: 7px 15px;
+    font-size: 16px;
+    padding-left: 18px;
+    background-color: #d7d7d7;
+    border-radius: 20px;
+  }
+  .iconfont {
+    display: flex;
+    justify-content: space-around;
+    flex: 1;
+    font-size: 25px;
+    line-height: 50px;
+  }
+  .staractive {
+    color: red;
+    font-weight: 700;
+  }
+  .iconpinglun- {
+    position: relative;
+    span {
+      position: absolute;
+      width: 28px;
+      height: 16px;
+      line-height: 18px;
+      top: 7px;
+      left: 14px;
+      border-radius: 8px;
+      background-color: red;
+      font-size: 13px;
+      text-align: center;
     }
   }
 }

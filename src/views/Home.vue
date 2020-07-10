@@ -61,6 +61,9 @@ export default {
       }
     },
     async getArticleList(id) {
+      if (this.pageIndex === 1) {
+        this.articleList = []
+      }
       const res = await this.$axios.get('/post', {
         params: {
           category: id,
@@ -98,7 +101,9 @@ export default {
       this.articleList = []
       this.loading = true
       this.finished = false
-      this.getArticleList(this.tabList[value].id)
+      setTimeout(() => {
+        this.getArticleList(this.tabList[value].id)
+      })
     }
   }
 }

@@ -61,8 +61,10 @@ export default {
         this.$toast.success(message)
         localStorage.setItem('token', data.token)
         localStorage.setItem('userId', data.user.id)
-        if (this.$route.query.back) {
-          this.$router.back()
+        const backUrl = localStorage.getItem('backUrl')
+        if (backUrl) {
+          this.$router.push(backUrl)
+          localStorage.removeItem('backUrl')
         } else {
           console.log(this.$route.query.back)
 
