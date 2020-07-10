@@ -9,6 +9,7 @@ import NewsHeader from './components/n-header.vue'
 import Logo from './components/n-logo.vue'
 import Nav from './components/n-nav.vue'
 import Post from './components/n-post.vue'
+import Comment from './components/n-comment.vue'
 import {
   Form,
   Field,
@@ -80,13 +81,17 @@ Vue.component('n-header', NewsHeader)
 Vue.component('n-logo', Logo)
 Vue.component('n-nav', Nav)
 Vue.component('n-post', Post)
+Vue.component('n-comment', Comment)
 Vue.config.productionTip = false
 
 // 定义全局过滤器
 Vue.filter('time', function(input, str = 'YYYY-MM-DD') {
   return moment(input).format(str)
 })
-
+moment.locale('zh-CN')
+Vue.filter('fromNow', function(input) {
+  return moment(input).fromNow()
+})
 Vue.prototype.$url = function(url) {
   if (url.startsWith('http')) {
     return url

@@ -40,6 +40,10 @@
         </div>
       </div>
     </div>
+    <div class="comments">
+      <h3>精彩跟帖</h3>
+      <n-comment :post="item" v-for="item in commentList" :key="item.id"></n-comment>
+    </div>
 
     <div class="follows"></div>
     <div class="write">
@@ -63,11 +67,13 @@ export default {
     return {
       detailList: {
         user: {}
-      }
+      },
+      commentList: []
     }
   },
   created() {
     this.getArticle()
+    this.getComments()
   },
   methods: {
     async getArticle() {
@@ -122,6 +128,16 @@ export default {
     },
     async starfn() {
       this.isLogin('/post_star')
+    },
+    async getComments() {
+      const id = this.$route.params.id
+      const res = await this.$axios.get(`/post_comment/${id}`)
+      // console.log(res)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.commentList = data
+        console.log(this.commentList)
+      }
     }
   }
 }
@@ -301,6 +317,13 @@ export default {
       font-size: 13px;
       text-align: center;
     }
+  }
+}
+.comments {
+  h3 {
+    font-size: 18px;
+    text-align: center;
+    padding: 10px;
   }
 }
 </style>
