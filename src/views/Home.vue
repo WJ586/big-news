@@ -13,6 +13,10 @@
       </div>
     </div>
     <div class="nav">
+      <van-sticky>
+        <span class="iconfont iconjiantou1" @click="$router.push('/manage')"></span>
+      </van-sticky>
+
       <van-tabs v-model="active" sticky animated swipeable color=" #d62312">
         <van-tab :title="item.name" v-for="item in tabList" :key="item.id">
           <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -34,6 +38,7 @@
 
 <script>
 export default {
+  name: 'home',
   data() {
     return {
       tabList: [],
@@ -51,6 +56,13 @@ export default {
   },
   methods: {
     async getTab() {
+      const columnList = JSON.parse(localStorage.getItem('columnList'))
+      // const addList = JSON.parse(localStorage.getItem('addList'))
+      if (columnList) {
+        this.tabList = columnList
+        this.getArticleList(this.tabList[0].id)
+        return
+      }
       const res = await this.$axios.get('/category')
       // console.log(res)
       const { statusCode, data } = res.data
@@ -101,9 +113,8 @@ export default {
       this.articleList = []
       this.loading = true
       this.finished = false
-      setTimeout(() => {
-        this.getArticleList(this.tabList[value].id)
-      })
+
+      this.getArticleList(this.tabList[value].id)
     }
   }
 }
@@ -129,6 +140,7 @@ export default {
         float: right;
         font-size: 30px;
         color: #ffffff;
+        padding-right: 15px;
       }
     }
 
@@ -143,6 +155,26 @@ export default {
       .n-search {
         font-size: 14px;
       }
+    }
+  }
+  .nav {
+    // width: 100%;
+    position: relative;
+    /deep/.van-tabs .van-sticky {
+      width: 80%;
+    }
+    .iconjiantou1 {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: block;
+      width: 20%;
+      height: 44px;
+      line-height: 44px;
+      font-size: 20px;
+      text-align: center;
+      background-color: #e4e4e4;
+      z-index: 999;
     }
   }
 }

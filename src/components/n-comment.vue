@@ -8,7 +8,7 @@
         <p class="username">{{post.user.nickname}}</p>
         <span class="time">{{post.create_date|fromNow}}</span>
       </div>
-      <div class="right">回复</div>
+      <div class="right" @click="reply(post.user.nickname,post.id)">回复</div>
     </div>
     <n-floor v-if="post.parent" :comment="post.parent" :num="getLou(0,post)"></n-floor>
     <div class="uComment">{{post.content}}</div>
@@ -31,6 +31,10 @@ export default {
       } else {
         return num
       }
+    },
+    reply(name, id) {
+      // console.log(name, id)
+      this.$bus.$emit('reply', name, id)
     }
   }
 }
@@ -66,8 +70,10 @@ export default {
     }
   }
   .uComment {
+    // width: 100%;
     padding: 15px 0 20px;
     font-size: 16px;
+    word-break: break-all;
   }
 }
 </style>

@@ -10,6 +10,7 @@ import MyComments from '../views/MyComments.vue'
 import MyStar from '../views/MyStar.vue'
 import Home from '../views/Home.vue'
 import NewsDetail from '../views/NewsDetail.vue'
+import Manage from '../views/Manage.vue'
 Vue.use(VueRouter)
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
@@ -26,7 +27,8 @@ const router = new VueRouter({
     { path: '/myfollows', component: MyFollow },
     { path: '/mycomments', component: MyComments },
     { path: '/mystar', component: MyStar },
-    { path: '/news-detail/:id', component: NewsDetail }
+    { path: '/news-detail/:id', component: NewsDetail },
+    { path: '/manage', component: Manage }
   ]
 })
 // 全局的导航守卫（路由的钩子函数 beforeEach afterEach）

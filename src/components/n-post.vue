@@ -1,5 +1,5 @@
 <template>
-  <div @click="$router.push(`/news-detail/${post.id}`)">
+  <div @click="$router.push(`/news-detail/${post.id}`)" class="post">
     <div class="video" v-if="post.type===2">
       <div class="title">{{post.title}}</div>
       <div class="img">

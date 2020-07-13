@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="detail">
     <div class="top">
       <div class="header">
         <div class="left" @click="$router.back()">
@@ -42,21 +42,28 @@
     </div>
     <div class="comments">
       <h3>精彩跟帖</h3>
+      <p v-if="!commentList.length" class="none">暂无跟帖，抢占沙发</p>
       <n-comment :post="item" v-for="item in commentList" :key="item.id"></n-comment>
     </div>
 
     <div class="follows"></div>
     <div class="write">
-      <input type="text" placeholder="写跟帖" />
-      <span class="iconfont iconpinglun-">
-        <span>{{detailList.comment_length}}</span>
-      </span>
-      <span
-        class="iconfont iconshoucang"
-        :class="{staractive:this.detailList.has_star}"
-        @click="starfn"
-      ></span>
-      <span class="iconfont iconfenxiang"></span>
+      <div class="input" v-if="isShowarea">
+        <input type="text" placeholder="写跟帖" @focus="focus" />
+        <span class="iconfont iconpinglun-">
+          <span>{{detailList.comment_length}}</span>
+        </span>
+        <span
+          class="iconfont iconshoucang"
+          :class="{staractive:this.detailList.has_star}"
+          @click="starfn"
+        ></span>
+        <span class="iconfont iconfenxiang"></span>
+      </div>
+      <div class="textarea" v-else>
+        <textarea :placeholder="`回复：@${replyName}`" ref="textarea" @blur="blur" v-model="content"></textarea>
+        <div class="send" @click="sendFn(detailList.id)">发送</div>
+      </div>
     </div>
   </div>
 </template>
@@ -68,14 +75,32 @@ export default {
       detailList: {
         user: {}
       },
-      commentList: []
+      commentList: [],
+      isShowarea: 'true',
+      content: '',
+      replyName: '',
+      replyId: ''
     }
   },
   created() {
+    // console.log('bus注册')
     this.getArticle()
     this.getComments()
+    this.$bus.$on('reply', this.replyFn)
+  },
+  destroyed() {
+    // console.log('bus取消')
+    this.$bus.$off('reply', this.replyFn)
   },
   methods: {
+    replyFn(name, id) {
+      this.replyName = name
+      this.replyId = id
+      this.isShowarea = false
+      this.$nextTick(() => {
+        this.$refs.textarea.focus()
+      })
+    },
     async getArticle() {
       const id = this.$route.params.id
       const res = await this.$axios.get(`/post/${id}`)
@@ -83,7 +108,7 @@ export default {
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.detailList = data
-        console.log(this.detailList)
+        // console.log(this.detailList)
       }
     },
     async isLogin(url, id) {
@@ -136,7 +161,39 @@ export default {
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.commentList = data
-        console.log(this.commentList)
+        // console.log(this.commentList)
+      }
+    },
+    async focus() {
+      this.isShowarea = false
+      // 让textarea自动获取焦点
+      // 修改完数据，等待DOM更新
+      await this.$nextTick()
+      this.$refs.textarea.focus()
+    },
+    blur() {
+      // 内容不为空时不消失
+      if (!this.content) {
+        this.isShowarea = true
+      }
+    },
+    async sendFn(id) {
+      // const id = this.$route.params.id
+      const res = await this.$axios.post(`/post_comment/${id}`, {
+        content: this.content,
+        parent_id: this.replyId
+      })
+      console.log(res)
+      if (res.data.statusCode === 200) {
+        this.content = ''
+        this.getComments()
+        this.detailList.comment_length++
+        this.isShowarea = true
+
+        // 清空原来评论的内容
+        this.content = ''
+        this.replyId = ''
+        this.replyName = ''
       }
     }
   }
@@ -144,6 +201,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.detail {
+  width: 100%;
+  // padding-bottom: 50px;
+}
 .header {
   padding: 5px 15px 0;
 
@@ -204,6 +265,9 @@ export default {
     font-size: 12px;
     color: #333333;
     line-height: 20px;
+    /deep/ img {
+      width: 100%;
+    }
   }
 }
 
@@ -280,42 +344,80 @@ export default {
   }
 }
 .write {
-  display: flex;
-  height: 50px;
-  input {
-    width: 200px;
-    border: none;
-    height: 36px;
-    margin: 7px 15px;
-    font-size: 16px;
-    padding-left: 18px;
-    background-color: #d7d7d7;
-    border-radius: 20px;
-  }
-  .iconfont {
-    display: flex;
-    justify-content: space-around;
-    flex: 1;
-    font-size: 25px;
-    line-height: 50px;
-  }
-  .staractive {
-    color: red;
-    font-weight: 700;
-  }
-  .iconpinglun- {
+  .input {
     position: relative;
-    span {
-      position: absolute;
-      width: 28px;
-      height: 16px;
-      line-height: 18px;
-      top: 7px;
-      left: 14px;
-      border-radius: 8px;
-      background-color: red;
-      font-size: 13px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    // width: 100%;
+    height: 50px;
+    background-color: #f2f2f2;
+    input {
+      width: 200px;
+      border: none;
+      height: 36px;
+      margin: 7px 15px;
+      font-size: 16px;
+      padding-left: 18px;
+      background-color: #d7d7d7;
+      border-radius: 20px;
+    }
+    .iconfont {
+      display: flex;
+      justify-content: space-around;
+      flex: 1;
+      font-size: 25px;
+      line-height: 50px;
+    }
+    .staractive {
+      color: red;
+      font-weight: 700;
+    }
+    .iconpinglun- {
+      position: relative;
+      span {
+        position: absolute;
+        width: 28px;
+        height: 16px;
+        line-height: 18px;
+        top: 7px;
+        left: 14px;
+        border-radius: 8px;
+        background-color: red;
+        font-size: 13px;
+        text-align: center;
+      }
+    }
+  }
+  .textarea {
+    background-color: #f2f2f2;
+    display: flex;
+    padding: 20px 15px 10px;
+    height: 120px;
+    textarea {
+      flex: 1;
+      resize: none;
+      border-radius: 10px;
+      border: none;
+      background-color: #d7d7d7;
+      padding-top: 15px;
+      padding-left: 20px;
+      font-size: 16px;
+      color: #7b7d7e;
+    }
+    .send {
+      position: relative;
+      bottom: -62px;
+      width: 65px;
+      height: 26px;
+      border-radius: 13px;
+      margin-left: 15px;
       text-align: center;
+      line-height: 26px;
+      color: white;
+      background-color: red;
+      font-size: 16px;
     }
   }
 }
@@ -324,6 +426,13 @@ export default {
     font-size: 18px;
     text-align: center;
     padding: 10px;
+  }
+  .none {
+    padding: 15px 0;
+    text-align: center;
+    font-size: 12px;
+    color: #c6b4b4;
+    border-bottom: 2px solid #e4e4e4;
   }
 }
 </style>

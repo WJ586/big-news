@@ -24,7 +24,8 @@ import {
   List,
   Tab,
   Tabs,
-  PullRefresh
+  PullRefresh,
+  Sticky
 } from 'vant'
 
 import axios from 'axios'
@@ -77,6 +78,7 @@ Vue.use(Uploader)
 Vue.use(List)
 Vue.use(Tab)
 Vue.use(Tabs)
+Vue.use(Sticky)
 Vue.component('n-header', NewsHeader)
 Vue.component('n-logo', Logo)
 Vue.component('n-nav', Nav)
@@ -99,7 +101,8 @@ Vue.prototype.$url = function(url) {
     return axios.defaults.baseURL + url
   }
 }
-
+const bus = new Vue()
+Vue.prototype.$bus = bus
 new Vue({
   router,
   render: h => h(App)
