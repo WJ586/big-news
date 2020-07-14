@@ -76,10 +76,11 @@ export default {
   padding: 10px;
   border-bottom: 1px solid #e4e4e4;
   .imgs {
+    // width: 100%;
     display: flex;
     justify-content: space-between;
     img {
-      width: 110px;
+      width: 100px;
       height: 80px;
       object-fit: cover;
     }
